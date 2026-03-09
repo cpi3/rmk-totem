@@ -5,50 +5,71 @@ vendor_id = 0x4C4B
 product_id = 0x0001
 version = "0.0.1"
 manufacturer = "GEIGEIGEIST"
+# Tell RMK which chip you are using so it compiles the right BLE stack
+chip = "nrf52840" 
 
-[matrix]
-# TOTEM uses 4 rows and 5 columns per half
+[split]
+connection = "ble"
+
+# --- LEFT HALF (CENTRAL) ---
+[split.central]
 rows = 4
 cols = 5
-layers = 4
+row_offset = 0
+col_offset = 0
+# RMK can auto-generate the BLE MAC address, but you can hardcode it here if you prefer
+# ble_addr = [0x18, 0x12, 0x34, 0x56, 0x78, 0x90] 
 
-# Seeed XIAO BLE (nRF52840) Pin Mapping
-# Verify these against your specific shield's soldering/schematic!
-# Default TOTEM usually maps to these D-pins on the XIAO
-input_pins = [
+[split.central.matrix]
+matrix_type = "normal"
+# XIAO BLE Pins for the left TOTEM half
+# Verify these against your soldering job!
+col_pins = [
     "P0_04", # D4
     "P0_05", # D5
     "P1_11", # D6
     "P1_12", # D7
     "P1_13"  # D8
 ]
-output_pins = [
+row_pins = [
     "P0_02", # D0
     "P0_03", # D1
     "P0_28", # D2
     "P0_29"  # D3
 ]
 
-[split]
-connection = "ble"
-
-[split.central]
+# --- RIGHT HALF (PERIPHERAL) ---
+[[split.peripheral]]
 rows = 4
 cols = 5
 row_offset = 0
-col_offset = 0
-ble_addr = [0x18, 0x12, 0x34, 0x56, 0x78, 0x90] # Replace with your central's MAC
+col_offset = 5 # Offsets by 5 columns so it maps to the right half of the layout below
+# ble_addr = [0x18, 0x12, 0x34, 0x56, 0x78, 0x91]
 
-[split.peripheral]
-rows = 4
-cols = 5
-row_offset = 0
-col_offset = 5
-ble_addr = [0x18, 0x12, 0x34, 0x56, 0x78, 0x91] # Replace with your peripheral's MAC
+[split.peripheral.matrix]
+matrix_type = "normal"
+# XIAO BLE Pins for the right TOTEM half
+# Because the right PCB is usually flipped, double check if the columns are reversed!
+col_pins = [
+    "P0_04", # D4
+    "P0_05", # D5
+    "P1_11", # D6
+    "P1_12", # D7
+    "P1_13"  # D8
+]
+row_pins = [
+    "P0_02", # D0
+    "P0_03", # D1
+    "P0_28", # D2
+    "P0_29"  # D3
+]
 
+# --- KEYMAP ---
 [layout]
-# Basic TOTEM 38-key QWERTY layout
-# Left half (0-4), Right half (5-9)
+rows = 4
+cols = 10
+layers = 4
+
 default = [
     ["Q", "W", "E", "R", "T",      "Y", "U", "I", "O", "P"],
     ["A", "S", "D", "F", "G",      "H", "J", "K", "L", "Semicolon"],
